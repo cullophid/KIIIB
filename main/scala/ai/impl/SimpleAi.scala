@@ -6,7 +6,6 @@ import core.messages._
 
 import java.util.Timer
 import utils.RichTimer._
-// git comment test
 class SimpleAi extends AiListener {
     
     def aiStarted(ctrl: AiController): Unit = { }
