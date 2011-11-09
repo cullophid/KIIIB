@@ -107,7 +107,7 @@ object Main extends SimpleGUIApplication {
   ai.start
   coordinator ! LinkActor(ai)
 
-  ai ! SetAi(Some(new _root_.ai.impl.SimpleAi))
+  ai ! SetAi(Some(new _root_.ai.impl.Ai))
 
 
   val deviceNodeActor = new DeviceNodeActor(man, deviceLayer)

@@ -14,7 +14,6 @@ case object TurnOffRecording
 case object GetEventLog
 case class  SetEventLog(log: List[DeviceEventMessage])
 case class  EventLog(log: List[DeviceEventMessage])
-
 /**
  * Represents the artificial intelligence component, which is responsible for
  * reacting to DeviceEventMessages.
