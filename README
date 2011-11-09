@@ -1,1 +1,14 @@
-GITHUB README
+# GITHUB README
+- Hej
+- Sa
+- And
+- Dreas
+
+## Code Section
+> Code <script>int something = 55
+> </script>
+
+## Realated work
+Check this cool link out: [See this link][link]
+
+[link]: http://www.google.com
