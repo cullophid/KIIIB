@@ -1,0 +1,4 @@
+package gui
+
+trait Selectable
+
