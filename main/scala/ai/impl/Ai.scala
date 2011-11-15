@@ -14,10 +14,8 @@ import java.sql.SQLException;
 import java.sql.Connection;
 import java.sql.Statement;
 class Ai extends AiListener {
-    
     def aiStarted(ctrl: AiController): Unit = { }
     def aiStopped: Unit = { }
-    
     var conn:Connection = null
     try {
         Class.forName("com.mysql.jdbc.Driver")//load the mysql driver
@@ -28,11 +26,10 @@ class Ai extends AiListener {
         println("SQLException: " + sqle.getMessage())
         println("SQLState: " + sqle.getSQLState())
         println("VendorError: " + sqle.getErrorCode())
-
         case e:Exception =>
            e.printStackTrace()
        }
-                                                                                                                                                                 
+
     /*
     *deviceEventRecieved handles events monitored by the AI
     */
@@ -57,8 +54,6 @@ class Ai extends AiListener {
             case (_: MotionSensor, MotionEvent(time)) => // motion sensor events
                 var stmt = conn.createStatement()
                 stmt.executeUpdate("INSERT INTO sensor_events VALUES("+id+",NOW())")
-
-
                 println("Sensor id :"+id)
             case _ => ()
         }
