@@ -1,6 +1,7 @@
 /*
 * Main file for the KIIIB project
 * Authors: Andreas Møller, David Emil Lemvigh
+* special line added to test github
 */
 
 package ai.impl

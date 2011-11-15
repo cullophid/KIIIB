@@ -20,19 +20,17 @@ class Ai extends AiListener {
     
     var conn:Connection = null
     try {
-        println("driver test")
-        Class.forName("com.mysql.jdbc.Driver")
-        println("driver test completed")
-        conn = DriverManager.getConnection("jdbc:mysql://localhost/kiiib?user=KIIIB&password=42")
-              }
-        catch {
-            case sqle:SQLException =>
-                println("SQLException: " + sqle.getMessage())
-                println("SQLState: " + sqle.getSQLState())
-                println("VendorError: " + sqle.getErrorCode())
- 
-            case e:Exception =>
-                e.printStackTrace()
+        Class.forName("com.mysql.jdbc.Driver")//load the mysql driver
+        conn = DriverManager.getConnection("jdbc:mysql://localhost/kiiib?user=KIIIB&password=42")//connect to the database
+     }
+     catch {
+        case sqle:SQLException =>
+        println("SQLException: " + sqle.getMessage())
+        println("SQLState: " + sqle.getSQLState())
+        println("VendorError: " + sqle.getErrorCode())
+
+        case e:Exception =>
+           e.printStackTrace()
        }
                                                                                                                                                                  
     /*
