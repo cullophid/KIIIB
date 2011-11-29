@@ -13,10 +13,12 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Connection;
 import java.sql.Statement;
+import SmartHouse.SmartHouse
 class Ai extends AiListener {
     def aiStarted(ctrl: AiController): Unit = { }
     def aiStopped: Unit = { }
     var conn:Connection = null
+    var smarthouse:SmartHouse = new SmartHouse()
     try {
         Class.forName("com.mysql.jdbc.Driver")//load the mysql driver
         conn = DriverManager.getConnection("jdbc:mysql://localhost/kiiib?user=KIIIB&password=42")//connect to the database
@@ -36,6 +38,8 @@ class Ai extends AiListener {
     def deviceEventReceived(c: AiController,id: MasterDeviceId,device: Device,event: DeviceEvent): Unit = {
         (device, event) match {
             case (_: BinarySwitch, TurnedOn(time)) => //switch turned on 
+                smarthouse.switchEvent(id.value,1)
+                /*
                 var stmt = conn.createStatement()
                 stmt.executeUpdate("INSERT INTO switch_events VALUES("+id+",1,NOW())")
                 //update "markov" table here?
@@ -43,7 +47,10 @@ class Ai extends AiListener {
             c.connectionsFrom(id) foreach {
                 x => c.sendDeviceCommand(x.to, TurnOn)
             }
+            */
             case (_: BinarySwitch, TurnedOff(time)) => // switch turned off
+                smarthouse.switchEvent(id.value,0)
+                /*
                 var stmt = conn.createStatement()
                 stmt.executeUpdate("INSERT INTO switch_events VALUES("+id+",0,NOW())")
                 // update markov table here?
@@ -51,10 +58,14 @@ class Ai extends AiListener {
                 c.connectionsFrom(id) foreach {
                     x => c.sendDeviceCommand(x.to, TurnOff)
                 }
+                */
             case (_: MotionSensor, MotionEvent(time)) => // motion sensor events
+                smarthouse.sensorEvent(id.value)
+                /*
                 var stmt = conn.createStatement()
                 stmt.executeUpdate("INSERT INTO sensor_events VALUES("+id+",NOW())")
                 println("Sensor id :"+id)
+                */
             case _ => ()
         }
     }
