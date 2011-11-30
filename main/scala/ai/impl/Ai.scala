@@ -9,16 +9,23 @@ import core.devices._
 import core.messages._
 import java.util.Timer
 import utils.RichTimer._
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Connection;
-import java.sql.Statement;
+import java.sql.DriverManager
+import java.sql.SQLException
+import java.sql.Connection
+import java.sql.Statement
+//import scala.collection.JavaConversions._
+import collection.jcl.Conversions._
+import collection.mutable.{Map => MMap}
+import java.util.Collections._
+
 import SmartHouse.SmartHouse
+
 class Ai extends AiListener {
     def aiStarted(ctrl: AiController): Unit = { }
     def aiStopped: Unit = { }
     var conn:Connection = null
     var smarthouse:SmartHouse = new SmartHouse()
+    
     try {
         Class.forName("com.mysql.jdbc.Driver")//load the mysql driver
         conn = DriverManager.getConnection("jdbc:mysql://localhost/kiiib?user=KIIIB&password=42")//connect to the database
@@ -61,6 +68,12 @@ class Ai extends AiListener {
                 */
             case (_: MotionSensor, MotionEvent(time)) => // motion sensor events
                 smarthouse.sensorEvent(id.value)
+                val lamps: MMap[java.lang.Integer, java.lang.Boolean] = smarthouse.shouldLampsBeTurnedOn(id.value)
+                
+                println("Sensor id :"+id)
+                lamps.keys foreach {
+                  case (key) => println(key + "-->" + lamps.get(key).get())
+                }
                 /*
                 var stmt = conn.createStatement()
                 stmt.executeUpdate("INSERT INTO sensor_events VALUES("+id+",NOW())")

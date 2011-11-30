@@ -114,16 +114,16 @@ object Main extends SimpleGUIApplication {
   deviceNodeActor.start
   coordinator ! LinkActor(deviceNodeActor)
 
-  val motionSensorHardwareDriver = new drivers.MotionSensorHardwareDriver(man)
-  motionSensorHardwareDriver.start
-  coordinator ! LinkActor(motionSensorHardwareDriver)
+//  val motionSensorHardwareDriver = new drivers.MotionSensorHardwareDriver(man)
+//  motionSensorHardwareDriver.start
+//  coordinator ! LinkActor(motionSensorHardwareDriver)
     
-//  val binarySensorHardwareDriver = new drivers.BinaryLightHardwareDriver(man)
-//  binarySensorHardwareDriver.start
-//  coordinator ! LinkActor(binarySensorHardwareDriver)
+  val binarySensorHardwareDriver = new drivers.BinaryLightHardwareDriver(man)
+  binarySensorHardwareDriver.start
+  coordinator ! LinkActor(binarySensorHardwareDriver)
 
-  val driverDeviceToDeviceListViewActor = new DriverDeviceToDeviceListViewActor(Seq(motionSensorHardwareDriver))
-//  val driverDeviceToDeviceListViewActor = new DriverDeviceToDeviceListViewActor(Seq(binarySensorHardwareDriver))
+//  val driverDeviceToDeviceListViewActor = new DriverDeviceToDeviceListViewActor(Seq(motionSensorHardwareDriver))
+  val driverDeviceToDeviceListViewActor = new DriverDeviceToDeviceListViewActor(Seq(binarySensorHardwareDriver))
   driverDeviceToDeviceListViewActor.start
   coordinator ! LinkActor(driverDeviceToDeviceListViewActor)
 
