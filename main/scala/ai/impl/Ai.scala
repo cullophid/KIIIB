@@ -43,6 +43,17 @@ class Ai extends AiListener {
     *deviceEventRecieved handles events monitored by the AI
     */
     def deviceEventReceived(c: AiController,id: MasterDeviceId,device: Device,event: DeviceEvent): Unit = {
+
+        def triggerSwitch(id: Int, state: Boolean) {
+            c.connectionsFrom(MasterDeviceId(id)) foreach {
+                if (state.booleanValue) {
+                    x => c.sendDeviceCommand(x.to, TurnOn)
+                } else {
+                    x => c.sendDeviceCommand(x.to, TurnOff)
+                }
+            }
+        }
+      
         (device, event) match {
             case (_: BinarySwitch, TurnedOn(time)) => //switch turned on 
                 smarthouse.switchEvent(id.value,1)
@@ -66,22 +77,29 @@ class Ai extends AiListener {
                     x => c.sendDeviceCommand(x.to, TurnOff)
                 }
                 */
-            case (_: MotionSensor, MotionEvent(time)) => // motion sensor events
+            case (_: MotionSensor, MotionEvent(time)) => {// motion sensor events
                 smarthouse.sensorEvent(id.value)
-                val lamps: MMap[java.lang.Integer, java.lang.Boolean] = smarthouse.shouldLampsBeTurnedOn(id.value)
+                val switches: MMap[java.lang.Integer, java.lang.Boolean] = smarthouse.markovLookup(id.value)
                 
-                println("Sensor id :"+id)
-                lamps.keys foreach {
-                  case (key) => println(key + "-->" + lamps.get(key).get())
+                switches.keys foreach {
+                  case (switch) => {
+                    println(switch + "-->" + switches.get(switch).get())
+                    val bool: java.lang.Boolean = switches.get(switch).get
+                    triggerSwitch(switch.intValue, bool.booleanValue)
+                  }
                 }
                 /*
                 var stmt = conn.createStatement()
                 stmt.executeUpdate("INSERT INTO sensor_events VALUES("+id+",NOW())")
                 println("Sensor id :"+id)
                 */
+            }
             case _ => ()
+            
         }
     }
+    
+
 }
 
 // vim: set ts=2 sw=2 et:
