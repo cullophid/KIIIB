@@ -83,7 +83,7 @@ class Ai extends AiListener {
                 
                 switches.keys foreach {
                   case (switch) => {
-                    println(switch + "-->" + switches.get(switch).get())
+//                    println(switch + "-->" + switches.get(switch).get())
                     val bool: java.lang.Boolean = switches.get(switch).get
                     triggerSwitch(switch.intValue, bool.booleanValue)
                   }
