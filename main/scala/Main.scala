@@ -113,7 +113,7 @@ object Main extends SimpleGUIApplication {
   val deviceNodeActor = new DeviceNodeActor(man, deviceLayer)
   deviceNodeActor.start
   coordinator ! LinkActor(deviceNodeActor)
-
+  
 //  val motionSensorHardwareDriver = new drivers.MotionSensorHardwareDriver(man)
 //  motionSensorHardwareDriver.start
 //  coordinator ! LinkActor(motionSensorHardwareDriver)

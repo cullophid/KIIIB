@@ -24,7 +24,7 @@ class Ai extends AiListener {
     def aiStarted(ctrl: AiController): Unit = { }
     def aiStopped: Unit = { }
     var conn:Connection = null
-    var smarthouse:SmartHouse = new SmartHouse()
+    var smarthouse:SmartHouse = new SmartHouse(this)
     
     try {
         Class.forName("com.mysql.jdbc.Driver")//load the mysql driver
@@ -39,64 +39,54 @@ class Ai extends AiListener {
            e.printStackTrace()
        }
 
+    var cached: Option[AiController] = None;
+    def triggerSwitch(id: Int, state: Boolean) {
+        cached match {
+            case Some(c) => {
+                c.connectionsFrom(MasterDeviceId(id)) foreach {
+                    if (state) {
+                        x => c.sendDeviceCommand(x.to, TurnOn)
+                    } else {
+                        x => c.sendDeviceCommand(x.to, TurnOff)
+                    }
+              }
+          }
+          case None => {
+              println("couldn't trigger switch - no ai controller in cache");
+          }    
+        }
+    }
     /*
     *deviceEventRecieved handles events monitored by the AI
     */
     def deviceEventReceived(c: AiController,id: MasterDeviceId,device: Device,event: DeviceEvent): Unit = {
-
-        def triggerSwitch(id: Int, state: Boolean) {
-            c.connectionsFrom(MasterDeviceId(id)) foreach {
-                if (state.booleanValue) {
-                    x => c.sendDeviceCommand(x.to, TurnOn)
-                } else {
-                    x => c.sendDeviceCommand(x.to, TurnOff)
-                }
-            }
-        }
+        cached = Some(c);
       
         (device, event) match {
             case (_: BinarySwitch, TurnedOn(time)) => //switch turned on 
                 smarthouse.switchEvent(id.value,1)
-                /*
-                var stmt = conn.createStatement()
-                stmt.executeUpdate("INSERT INTO switch_events VALUES("+id+",1,NOW())")
-                //update "markov" table here?
-            println("switched on "+id)
-            c.connectionsFrom(id) foreach {
-                x => c.sendDeviceCommand(x.to, TurnOn)
-            }
-            */
+                on(id.value)
             case (_: BinarySwitch, TurnedOff(time)) => // switch turned off
                 smarthouse.switchEvent(id.value,0)
-                /*
-                var stmt = conn.createStatement()
-                stmt.executeUpdate("INSERT INTO switch_events VALUES("+id+",0,NOW())")
-                // update markov table here?
-                println("switched off "+id)
-                c.connectionsFrom(id) foreach {
-                    x => c.sendDeviceCommand(x.to, TurnOff)
-                }
-                */
+                off(id.value)
             case (_: MotionSensor, MotionEvent(time)) => {// motion sensor events
                 smarthouse.sensorEvent(id.value)
-                val switches: MMap[java.lang.Integer, java.lang.Boolean] = smarthouse.markovLookup(id.value)
-                
-                switches.keys foreach {
-                  case (switch) => {
-//                    println(switch + "-->" + switches.get(switch).get())
-                    val bool: java.lang.Boolean = switches.get(switch).get
-                    triggerSwitch(switch.intValue, bool.booleanValue)
-                  }
-                }
-                /*
-                var stmt = conn.createStatement()
-                stmt.executeUpdate("INSERT INTO sensor_events VALUES("+id+",NOW())")
-                println("Sensor id :"+id)
-                */
+                //FIXME: do markov lookup
+                //on(1)
             }
             case _ => ()
             
         }
+    }
+    
+    def on(id: Int) {
+      println("turn on switch: " + id)
+      triggerSwitch(id, true)
+    }
+    
+    def off(id: Int) {
+      println("turn off lamp: " + id)
+      triggerSwitch(id, false)
     }
     
 
