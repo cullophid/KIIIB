@@ -17,8 +17,7 @@ import java.sql.Statement
 import collection.jcl.Conversions._
 import collection.mutable.{Map => MMap}
 import java.util.Collections._
-
-import SmartHouse.SmartHouse
+import smarthouse.SmartHouse
 
 class Ai extends AiListener {
     def aiStarted(ctrl: AiController): Unit = { }
@@ -71,6 +70,16 @@ class Ai extends AiListener {
                 off(id.value)
             case (_: MotionSensor, MotionEvent(time)) => {// motion sensor events
                 smarthouse.sensorEvent(id.value)
+               // val lamps: MMap[java.lang.Integer, java.lang.Boolean] = smarthouse.shouldLampsBeTurnedOn(id.value)
+                
+               /* println("Sensor id :"+id)
+                lamps.keys foreach {
+                  case (key) => println(key + "-->" + lamps.get(key).get())
+                }
+                var stmt = conn.createStatement()
+                stmt.executeUpdate("INSERT INTO sensor_events VALUES("+id+",NOW())")
+                println("Sensor id :"+id)
+                */
                 //FIXME: do markov lookup
                 //on(1)
             }
