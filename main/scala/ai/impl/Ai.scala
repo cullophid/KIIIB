@@ -26,7 +26,6 @@ class Ai extends AiListener with AI {
     def aiStopped: Unit = { }
     var conn:Connection = null
     var smarthouse:SmartHouse = new SmartHouse(this)
-//    var smarthouse:SmartHouse = new SmartHouse()
     try {
         Class.forName("com.mysql.jdbc.Driver")//load the mysql driver
         conn = DriverManager.getConnection("jdbc:mysql://localhost/kiiib?user=KIIIB&password=42")//connect to the database
@@ -66,10 +65,8 @@ class Ai extends AiListener with AI {
         (device, event) match {
             case (_: BinarySwitch, TurnedOn(time)) => //switch turned on 
                 smarthouse.switchEvent(id.value,1)
-//                on(id.value)
             case (_: BinarySwitch, TurnedOff(time)) => // switch turned off
                 smarthouse.switchEvent(id.value,0)
-//                off(id.value)
             case (_: MotionSensor, MotionEvent(time)) => {// motion sensor events
                 smarthouse.sensorEvent(id.value)
             }
