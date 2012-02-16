@@ -4,6 +4,7 @@
 */
 
 package ai.impl
+
 import core._
 import core.devices._
 import core.messages._
@@ -17,15 +18,15 @@ import java.sql.Statement
 import collection.jcl.Conversions._
 import collection.mutable.{Map => MMap}
 import java.util.Collections._
+import smarthouse.AI
+import smarthouse.SmartHouse
 
-import SmartHouse.SmartHouse
-
-class Ai extends AiListener {
+class Ai extends AiListener with AI {
     def aiStarted(ctrl: AiController): Unit = { }
     def aiStopped: Unit = { }
     var conn:Connection = null
     var smarthouse:SmartHouse = new SmartHouse(this)
-    
+//    var smarthouse:SmartHouse = new SmartHouse()
     try {
         Class.forName("com.mysql.jdbc.Driver")//load the mysql driver
         conn = DriverManager.getConnection("jdbc:mysql://localhost/kiiib?user=KIIIB&password=42")//connect to the database
@@ -65,14 +66,12 @@ class Ai extends AiListener {
         (device, event) match {
             case (_: BinarySwitch, TurnedOn(time)) => //switch turned on 
                 smarthouse.switchEvent(id.value,1)
-                on(id.value)
+//                on(id.value)
             case (_: BinarySwitch, TurnedOff(time)) => // switch turned off
                 smarthouse.switchEvent(id.value,0)
-                off(id.value)
+//                off(id.value)
             case (_: MotionSensor, MotionEvent(time)) => {// motion sensor events
                 smarthouse.sensorEvent(id.value)
-                //FIXME: do markov lookup
-                //on(1)
             }
             case _ => ()
             
